@@ -5,4 +5,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: echo Hello
+      - run: |
+          echo Hello
+          echo ${{ github.ref }}
+      - uses: docker/metadata-action@v4
+        with:
+          images: ${{ github.repository }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=sha,format=long
+            type=schedule,pattern={{date 'YYYYMMDD-hhmmss'}}
+      - run: |
+          echo ${{ steps.meta.outputs.tags }}
+          echo ${{ steps.meta.outputs.label }}
